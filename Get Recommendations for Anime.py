@@ -55,4 +55,4 @@ anime_recs = asyncio.run(get_recs(ids[:100]))
 print('--- %s seconds ---' % (time() - start_time))
 
 anime_recs.to_csv('C:/Users/ASDW/Python/Projects/Recosys 2.0/datasets/anime_dataset/recommendations.csv')
-print(anime_recs.info())
+print(anime_recs.head())
