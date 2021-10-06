@@ -1,4 +1,3 @@
-import asyncio
 import pandas as pd
 import jikanpy as jp
 from time import sleep, time
