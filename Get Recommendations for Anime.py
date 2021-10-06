@@ -7,27 +7,30 @@ jikan = jp.Jikan()
 anime_dataset = pd.read_csv('./datasets/anime_dataset/anime.csv')
 ids = anime_dataset.MAL_ID.tolist()
 
+
 def get_cleared_recs(uncleared_recs):
     titles = []
     mal_ids = []
-    i = 0
-    while i != 7:
+    index = 0
+    while index != 7:
         try:
             title = uncleared_recs['recommendations'][i]['title']
             mal_id = uncleared_recs['recommendations'][i]['mal_id']
             titles.append(title)
             mal_ids.append(mal_id)
-            i += 1
+            index += 1
         except IndexError:
             titles.append('No')
             mal_ids.append('No')
-            i += 1
+            index += 1
     return titles, mal_ids
 
-def get_recs(id):
-    uncleared_recs = jikan.anime(id, extension='recommendations')
+
+def get_recs(ID):
+    uncleared_recs = jikan.anime(ID, extension='recommendations')
     recs = get_cleared_recs(uncleared_recs)
     return recs
+
 
 anime_recs = pd.DataFrame(columns=['ID', 'Reco_Title', 'Reco_ID'])
 
@@ -49,10 +52,6 @@ for item_id in ids:
         not_responsed_ids.append(item_id)
         sleep(60)
 print("--- %s seconds ---" % (time() - start_time))
-
-start_time = time()
-anime_recs = asyncio.run(get_recs(ids[:100]))
-print('--- %s seconds ---' % (time() - start_time))
 
 anime_recs.to_csv('C:/Users/ASDW/Python/Projects/Recosys 2.0/datasets/anime_dataset/recommendations.csv')
 print(anime_recs.head())

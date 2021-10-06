@@ -1,6 +1,3 @@
-import json
-import aiohttp
-import asyncio
 import requests
 import numpy as np
 import pandas as pd
@@ -11,13 +8,15 @@ tmdb.API_KEY = '...'
 movies_dataset = pd.read_csv('./datasets/movies_dataset/movies_clear.csv')
 ids = movies_dataset.id
 
+
 def get_recommendations(item_id):
-    try: # если есть рекомендации, то выполняем код
+    try:  # если есть рекомендации, то выполняем код
         movie = tmdb.Movies(item_id)
         recs = movie.recommendations()['results'][:7]
-    except requests.HTTPError: # если их нет, то возвращаем пропущенные значения
+    except requests.HTTPError:  # если их нет, то возвращаем пропущенные значения
         recs = [{'title': np.NaN, 'id': np.NaN}, {'title': np.NaN, 'id': np.NaN}]
     return recs
+
 
 movie_recs = pd.DataFrame(columns=['ID', 'Reco_Title', 'Reco_ID'])
 
