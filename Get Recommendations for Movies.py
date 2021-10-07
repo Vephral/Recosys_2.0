@@ -33,5 +33,5 @@ for item_id in ids:
         if len(movie_recs) % 100 == 0:
             print(len(movie_recs))
 
-movie_recs.to_csv('C:/Users/ASDW/Python/Projects/Recosys 2.0/datasets/movies_dataset/recommendations.csv')
+movie_recs.to_csv('./datasets/movies_dataset/recommendations.csv')
 print(movie_recs.head())

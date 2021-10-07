@@ -35,7 +35,7 @@ anime_recs = pd.DataFrame(columns=['ID', 'Reco_Title', 'Reco_ID'])
 
 start_time = time()
 i = 0
-not_responsed_ids = []
+no_response_ids = []
 for item_id in ids:
     try:
         if item_id not in anime_recs.ID.tolist():
@@ -48,9 +48,9 @@ for item_id in ids:
         if item_id in anime_recs.ID.tolist():
             continue
     except jp.APIException:
-        not_responsed_ids.append(item_id)
+        no_response_ids.append(item_id)
         sleep(60)
 print("--- %s seconds ---" % (time() - start_time))
 
-anime_recs.to_csv('C:/Users/ASDW/Python/Projects/Recosys 2.0/datasets/anime_dataset/recommendations.csv')
+anime_recs.to_csv('./datasets/anime_dataset/recommendations.csv')
 print(anime_recs.head())
