@@ -1,9 +1,8 @@
 import pandas as pd
 from time import time
-# в нем находятся все нужные нам библиотеки и функции
 import DataPreparation as dp
+from sklearn.preprocessing import OrdinalEncoder
 from sklearn.impute import KNNImputer, SimpleImputer
-from sklearn.preprocessing import MinMaxScaler, OrdinalEncoder
 
 games_dataset = pd.read_csv('./datasets/games_dataset/new_games_dataset.csv', low_memory=False)
 # так как с самого начала, они распределены в хаотичном порядке

@@ -1,7 +1,6 @@
 import pandas as pd
-# в нем находятся все нужные нам библиотеки и функции
 import DataPreparation as dp
-from sklearn.preprocessing import MinMaxScaler, OrdinalEncoder
+from sklearn.preprocessing import OrdinalEncoder
 
 
 movies_dataset = pd.read_csv('./datasets/movies_dataset/movies_clear.csv')

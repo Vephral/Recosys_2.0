@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-# в нем находятся все нужные нам библиотеки и функции
 import DataPreparation as dp
 from sklearn.impute import KNNImputer
 from sklearn.preprocessing import OrdinalEncoder
