@@ -91,5 +91,5 @@ an_name_id_dict_en = dict(zip(en_names, ids))
 anime_matrices = dp.implement_vectorizer(anime_dataset)
 
 # применяем масштабирование на всех столбцах
-scaled_nums, cols = dp.implement_scaler(anime_dataset)
+scaled_nums, cols = dp.implement_scalar(anime_dataset)
 anime_dataset[cols] = scaled_nums

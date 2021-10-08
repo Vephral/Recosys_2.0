@@ -150,10 +150,10 @@ def implement_vectorizer(dataset):
     return list_of_matrices
 
 
-scaler = MinMaxScaler()
+scalar = MinMaxScaler()
 
 
-def implement_scaler(dataset):
+def implement_scalar(dataset):
     num_cols = [i for i in dataset.columns if dataset[i].dtype != 'object' and i not in ['MAL_ID', 'id']]
-    scaled_cols = scaler.fit_transform(dataset[num_cols])
+    scaled_cols = scalar.fit_transform(dataset[num_cols])
     return scaled_cols, num_cols
