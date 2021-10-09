@@ -7,7 +7,9 @@ from sklearn.impute import KNNImputer, SimpleImputer
 games_dataset = pd.read_csv('./datasets/games_dataset/new_games_dataset.csv', low_memory=False)
 # так как с самого начала, они распределены в хаотичном порядке, хочется сортировки...
 games_dataset = games_dataset.sort_values(by='id', ignore_index=True)
+print('Dataset Loaded...')
 
+print('Start impute missing values...')
 # их можно удалить, так как по тем или иным причинам, они посчитались мной бесполезными
 dropped_cols = ['aggregated_rating', 'aggregated_rating_count', 'game_engines', 'status', 'release_dates',
                 'age_ratings', 'dlcs', 'franchise', 'parent_game', 'websites', 'external_games', 'alternative_names']
@@ -45,7 +47,9 @@ for float_col in float_cols:
 imputer = SimpleImputer(strategy='most_frequent')
 for i in range(1, 160):
     games_dataset[:(i * 1000)] = imputer.fit_transform(games_dataset[:(i * 1000)])
+print('End of imputation...')
 
+print('Start encoding categorical values...')
 # так как нам не важно, каким значением будет число
 # лишь бы оно было разное, выбираем самый простой кодировщик
 encoder = OrdinalEncoder()
@@ -53,16 +57,23 @@ encoder = OrdinalEncoder()
 # три последних кодируем, так как в них сравнительно мало уникальных значений
 cat_cols = ['collection', 'game_modes', 'platforms', 'player_perspectives', 'genres']
 games_dataset[cat_cols] = encoder.fit_transform(games_dataset[cat_cols])
+print('End of encoding...')
 
+print('Make dict of names and IDs, IDs and names...')
 # все те же словари, которые дадут нам возможность получить название по id и наоборот
 ids = games_dataset.id
 names = games_dataset.name
 game_id_name = dict(zip(ids, names))
 game_name_id_ = dict(zip(names, ids))
+print('End of making dicts...')
 
+print('Start transform text values into a Bag-Of-Words...')
 # применяем bag-of-words на текстовые столбцы, если что, то функция сама их найдет
 games_vector = dp.implement_vectorizer(games_dataset)
+print('End of transformation...')
 
+print('Implementing Normalization...')
 # применяем масштабирование
 scaled_nums, cols = dp.implement_scalar(games_dataset)
 games_dataset[cols] = scaled_nums
+print('End of Normalization...')

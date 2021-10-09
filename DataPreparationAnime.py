@@ -5,7 +5,9 @@ from sklearn.impute import KNNImputer
 from sklearn.preprocessing import OrdinalEncoder
 
 anime_dataset = pd.read_csv('./datasets/anime_dataset/anime.csv')
+print('Dataset Loaded...')
 
+print('Start impute missing values...')
 # все столбцы, которые назваются Score
 scores = [i for i in anime_dataset.columns if i.split('-')[0] == 'Score']
 anime_dataset[scores] = anime_dataset[scores].replace('Unknown', '0')
@@ -18,7 +20,9 @@ imputer = KNNImputer()
 anime_dataset['Episodes'] = anime_dataset.Episodes.replace('Unknown', np.NaN)
 anime_dataset['Ranked'] = anime_dataset.Ranked.replace('Unknown', np.NaN)
 anime_dataset[['Episodes', 'Ranked']] = imputer.fit_transform(anime_dataset[['Episodes', 'Ranked']])
+print('End of imputation...')
 
+print('Start encoding categorical values...')
 # так как нам не важно, каким значением будет число
 # лишь бы оно было разное, выбираем самый простой кодировщик
 encoder = OrdinalEncoder()
@@ -26,7 +30,9 @@ encoder = OrdinalEncoder()
 # все эти столбцы - категорические, так как содержат сравнительно маленькое количество уникальных значений
 cat_cols = ['Type', 'Duration', 'Rating', 'Source', 'Studios', 'Premiered', 'Episodes', 'Producers', 'Licensors']
 anime_dataset[cat_cols] = encoder.fit_transform(anime_dataset[cat_cols])
+print('End of encoding...')
 
+print('Start of transforming date column...')
 # самый простой способ
 cleared_date = anime_dataset.Aired.str.replace(',', '')
 # regex=false, иначе питончик будет ругаться
@@ -77,7 +83,9 @@ anime_dataset[cols] = date_cols
 del anime_dataset['Aired']
 # как мне кажется, от японского названия нет толку, поэтому просто удалим его.
 del anime_dataset['Japanese name']
+print('End of transformation...')
 
+print('Make dict of names and IDs, IDs and names...')
 # разделение для того, чтобы, ну кто знает этих людей, вдруг кому-то придет в голову кинуть название на английском языке
 ids = anime_dataset.MAL_ID
 jap_names = anime_dataset.Name
@@ -86,10 +94,15 @@ an_id_name_dict_jap = dict(zip(ids, jap_names))
 an_id_name_dict_en = dict(zip(ids, en_names))
 an_name_id_dict_jap = dict(zip(jap_names, ids))
 an_name_id_dict_en = dict(zip(en_names, ids))
+print('End of making dicts...')
 
+print('Start transform text values into a Bag-Of-Words...')
 # кодируем текстовые столбцы в матрицу признаков
 anime_matrices = dp.implement_vectorizer(anime_dataset)
+print('End of transformation...')
 
+print('Implementing Normalization...')
 # применяем масштабирование на всех столбцах
 scaled_nums, cols = dp.implement_scalar(anime_dataset)
 anime_dataset[cols] = scaled_nums
+print('End of Normalization...')

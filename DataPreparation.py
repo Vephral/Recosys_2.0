@@ -10,8 +10,6 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
-# ради того, чтобы быть для всех,
-# эта функция усложнилась
 def date_to_cols(series, cols):
     new_series = pd.Series(dtype='int64')
     for i in range(len(cols)):
