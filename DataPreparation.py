@@ -55,6 +55,10 @@ def removed_html_tags(string):
     return new_str
 
 
+# Код внизу вдохновлялся (нагло сворован) отсюда:
+# https://github.com/ageron/handson-ml2/blob/master/03_classification.ipynb
+
+
 class TextToVectorCounter(BaseEstimator, TransformerMixin):
     def __init__(self, to_lower=True, remove_punctuation=True, stemming=True, replace_nums=True,
                  replace_urls=True, remove_html_tags=True):
@@ -79,7 +83,7 @@ class TextToVectorCounter(BaseEstimator, TransformerMixin):
                     text = text.replace(url, 'URL')
             if self.remove_punctuation:
                 text = removed_punctuation(text, ['.', ',', '?', ':', ';', '[', ']',
-                                                 '!', '(', ')', '-', "'", '}', '{'])
+                                                  '!', '(', ')', '-', "'", '}', '{'])
             if self.replace_nums:
                 text = re.sub(r'\d+(?:\.\d*)?(?:[eE][+-]?\d+)?', 'NUMBER', text)
             if self.remove_html_tags:
@@ -144,7 +148,7 @@ def get_text_features(dataset, features):
     text_features = []
     for i in range(dataset.shape[0]):
         # добавляем пробел, чтобы vectorizer не засчитал "слипшиеся" слова как одно слово
-        text_features.append(''.join([dataset[feature].loc[i]+' ' for feature in features]))
+        text_features.append(''.join([dataset[feature].loc[i] + ' ' for feature in features]))
     return text_features
 
 
