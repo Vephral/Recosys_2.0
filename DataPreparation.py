@@ -32,23 +32,23 @@ def date_to_cols(series, cols):
     return new_series
 
 
-def remove_punctuation(string, signs):
+def removed_punctuation(string, signs):
     for sign in signs:
         string = string.replace(sign, '')
     return string
 
 
-def remove_html_tags(str):
+def removed_html_tags(string):
     html_tag = ''
-    new_str = str
+    new_str = string
     start = False
-    for i in range(len(str)):
-        if str[i] == '<':
-            html_tag += str[i]
+    for i in range(len(string)):
+        if string[i] == '<':
+            html_tag += string[i]
             start = True
-        if start and str[i] != '<':
-            html_tag += str[i]
-        if str[i] == '>':
+        if start and string[i] != '<':
+            html_tag += string[i]
+        if string[i] == '>':
             start = False
             new_str = new_str.replace(html_tag, '')
             html_tag = ''
@@ -78,12 +78,12 @@ class TextToVectorCounter(BaseEstimator, TransformerMixin):
                 for url in list_of_urls:
                     text = text.replace(url, 'URL')
             if self.remove_punctuation:
-                text = remove_punctuation(text, ['.', ',', '?', ':', ';', '[', ']',
+                text = removed_punctuation(text, ['.', ',', '?', ':', ';', '[', ']',
                                                  '!', '(', ')', '-', "'", '}', '{'])
             if self.replace_nums:
                 text = re.sub(r'\d+(?:\.\d*)?(?:[eE][+-]?\d+)?', 'NUMBER', text)
             if self.remove_html_tags:
-                text = remove_html_tags(text)
+                text = removed_html_tags(text)
             # так будет быстрее, за счет меньшего количества операций
             words_count = Counter(text.split())
             if self.stemming:
@@ -140,12 +140,12 @@ text_to_nums = Pipeline([('TextToCounter', TextToVectorCounter()),
                          ('CounterToFeature', VectorCounterToFeature())], verbose=True)
 
 
-def implement_vectorizer(dataset):
-    list_of_matrices = []
-    text_cols = [i for i in dataset.columns if dataset[i].dtype == 'object']
-    for col in text_cols:
-        list_of_matrices.append(text_to_nums.fit_transform(dataset[col]))
-    return list_of_matrices
+def get_text_features(dataset, features):
+    text_features = []
+    for i in range(dataset.shape[0]):
+        # добавляем пробел, чтобы vectorizer не засчитал "слипшиеся" слова как одно слово
+        text_features.append(''.join([dataset[feature].loc[i]+' ' for feature in features]))
+    return text_features
 
 
 scalar = MinMaxScaler()

@@ -1,5 +1,6 @@
 import pandas as pd
 import DataPreparation as dp
+from multiprocessing import get_context
 from sklearn.preprocessing import OrdinalEncoder
 
 
@@ -39,8 +40,7 @@ movie_name_id = dict(zip(names, ids))
 print('End of making dicts...')
 
 print('Start transform text values into a Bag-Of-Words...')
-# применяем bag-of-words на текстовые столбцы
-movies_matrices = dp.implement_vectorizer(movies_dataset)
+movies_matrices = dp.get_text_features(movies_dataset)
 print('End of transformation...')
 
 print('Implementing Normalization...')
@@ -48,4 +48,3 @@ print('Implementing Normalization...')
 scaled_nums, cols = dp.implement_scalar(movies_dataset)
 movies_dataset[cols] = scaled_nums
 print('End of Normalization...')
-

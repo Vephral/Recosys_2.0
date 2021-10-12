@@ -69,7 +69,7 @@ print('End of making dicts...')
 
 print('Start transform text values into a Bag-Of-Words...')
 # применяем bag-of-words на текстовые столбцы, если что, то функция сама их найдет
-games_vector = dp.implement_vectorizer(games_dataset)
+games_matrices = dp.get_text_features(games_dataset)
 print('End of transformation...')
 
 print('Implementing Normalization...')

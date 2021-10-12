@@ -98,7 +98,7 @@ print('End of making dicts...')
 
 print('Start transform text values into a Bag-Of-Words...')
 # кодируем текстовые столбцы в матрицу признаков
-anime_matrices = dp.implement_vectorizer(anime_dataset)
+anime_matrices = dp.get_text_features(anime_dataset)
 print('End of transformation...')
 
 print('Implementing Normalization...')
