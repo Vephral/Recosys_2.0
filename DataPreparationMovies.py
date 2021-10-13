@@ -5,6 +5,11 @@ from sklearn.preprocessing import OrdinalEncoder, MinMaxScaler
 movies_dataset = pd.read_csv('./datasets/movies_dataset/movies_clear.csv')
 print('Dataset Loaded...')
 
+print('Make dict of names and IDs, IDs and names...')
+# все те же словари, которые дадут нам возможность получить название по id и наоборот
+movie_id_name, movie_name_id = dp.make_dict_of_names(movies_dataset, movies_dataset.name)
+print('End of making dicts...')
+
 print('Start impute missing values...')
 # таким образом, у нас получается так, что текстовые столбцы тоже заменяются средним значением
 movies_dataset = movies_dataset.fillna(movies_dataset.mode().iloc[0])
@@ -27,11 +32,6 @@ date_cols = dp.date_to_cols(splitted_data, cols=cols)
 movies_dataset[cols] = date_cols
 del movies_dataset['release_date']
 print('End of transformation...')
-
-print('Make dict of names and IDs, IDs and names...')
-# все те же словари, которые дадут нам возможность получить название по id и наоборот
-movie_id_name, movie_name_id = dp.make_dict_of_names(movies_dataset, movies_dataset.name)
-print('End of making dicts...')
 
 del movies_dataset['title']
 del movies_dataset['id']

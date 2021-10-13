@@ -22,6 +22,16 @@ games_dataset = games_dataset.loc[((games_dataset.category == '0')
                                    | (games_dataset.category == '11')) & (games_dataset.release_dates.isnull() == False)
                                   & (games_dataset.keywords.isnull() == False)]
 
+print('Make dict of names and IDs, IDs and names...')
+# если не обнулить индекс, то потом вылезут ошибки, связанные с индексом
+games_dataset = games_dataset.reset_index(drop=True)
+# все те же словари, которые дадут нам возможность получить название по id и наоборот
+game_id_name, game_name_id = dp.make_dict_of_names(games_dataset, games_dataset.name)
+print('End of making dicts...')
+
+del games_dataset['slug']
+del games_dataset['similar_games']
+
 print('Start impute missing values...')
 # их можно удалить, так как по тем или иным причинам, они посчитались мной бесполезными
 dropped_cols = ['aggregated_rating', 'aggregated_rating_count', 'game_engines', 'status', 'release_dates',
@@ -57,25 +67,17 @@ print('Start encoding categorical values...')
 # лишь бы оно было разное, выбираем самый простой кодировщик
 encoder = OrdinalEncoder()
 # три последних кодируем, так как в них сравнительно мало уникальных значений
-cat_cols = ['collection', 'game_modes', 'platforms', 'player_perspectives', 'genres', 'keywords', 'involved_companies']
+cat_cols = ['collection', 'game_modes', 'platforms', 'player_perspectives',
+            'genres', 'keywords', 'involved_companies', 'tags']
 games_dataset[cat_cols] = encoder.fit_transform(games_dataset[cat_cols])
 print('End of encoding...')
 
-print('Make dict of names and IDs, IDs and names...')
-# если не обнулить индекс, то потом вылезут ошибки, связанные с индексом
-games_dataset = games_dataset.reset_index(drop=True)
-# все те же словари, которые дадут нам возможность получить название по id и наоборот
-game_id_name, game_name_id = dp.make_dict_of_names(games_dataset, games_dataset.name)
-print('End of making dicts...')
-
 del games_dataset['id']
 del games_dataset['name']
-del games_dataset['slug']
-del games_dataset['similar_games']
 
 print('Implementing Normalization...')
 scalar = MinMaxScaler()
-games_dataset = scalar.fit_transform(games_dataset)
+games_dataset = pd.DataFrame(scalar.fit_transform(games_dataset))
 print('End of Normalization...')
 
 # у данного набора тоже большое время ожидания исполнения кода - 3 минуты

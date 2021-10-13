@@ -14,7 +14,6 @@ anime_dataset[scores] = anime_dataset[scores].replace('Unknown', '0')
 anime_dataset[scores] = anime_dataset[scores].astype('float64')
 
 imputer = KNNImputer()
-
 # из-за того, что в наборе были скрытые пропущенные значения,
 # пришлось их "выпустить"
 anime_dataset['Episodes'] = anime_dataset.Episodes.replace('Unknown', np.NaN)
@@ -26,7 +25,6 @@ print('Start encoding categorical values...')
 # так как нам не важно, каким значением будет число
 # лишь бы оно было разное, выбираем самый простой кодировщик
 encoder = OrdinalEncoder()
-
 # все эти столбцы - категорические, так как содержат сравнительно маленькое количество уникальных значений
 cat_cols = ['Type', 'Duration', 'Rating', 'Source', 'Studios', 'Premiered', 'Episodes', 'Producers', 'Licensors']
 anime_dataset[cat_cols] = encoder.fit_transform(anime_dataset[cat_cols])
@@ -101,7 +99,8 @@ text_cols = ['Genres', 'English name']
 # кодируем текстовые столбцы в матрицу признаков
 anime_dataset['text_features'] = dp.get_text_features(anime_dataset, text_cols)
 
-anime_matrix = dp.text_to_nums.fit_transform(anime_dataset['text_features'])
+#anime_matrix = dp.text_to_nums.fit_transform(anime_dataset['text_features'])
+anime_matrix = pd.read_csv('./datasets/anime_dataset/anime_text_matrix.csv')
 print('End of transformation...')
 
 del anime_dataset['Genres']
@@ -115,6 +114,7 @@ anime_dataset = scalar.fit_transform(anime_dataset)
 print('End of Normalization...')
 
 # это нужно сделать, так как большое время ожидания исполнения кода - 9 минут на то, чтобы преобразовать тексты
-anime_text_matrix = pd.DataFrame(anime_matrix.toarray())
-anime_text_matrix.to_csv('C:/Users/ASDW/PycharmProjects/Recosys 2.0/datasets/anime_dataset/anime_txt_matrix.csv')
-anime_dataset.to_csv('C:/Users/ASDW/PycharmProjects/Recosys 2.0/datasets/anime_dataset/anime_num_matrix.csv')
+# но сейчас, когда уже все сделано, этот код не нужен
+# anime_text_matrix = pd.DataFrame(anime_matrix.toarray())
+# anime_text_matrix.to_csv('C:/Users/ASDW/PycharmProjects/Recosys 2.0/datasets/anime_dataset/anime_txt_matrix.csv')
+# anime_dataset.to_csv('C:/Users/ASDW/PycharmProjects/Recosys 2.0/datasets/anime_dataset/anime_num_matrix.csv')
