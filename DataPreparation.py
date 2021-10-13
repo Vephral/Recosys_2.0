@@ -9,6 +9,8 @@ from nltk.stem.porter import PorterStemmer
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
+# функция, которая преобразовывает столбцы с датами вида 00-00-0000
+# если есть пропущенные значения, она заменяет их на случайные значения
 def date_to_cols(series, cols):
     new_series = pd.Series(dtype='int64')
     for i in range(len(cols)):
@@ -31,12 +33,23 @@ def date_to_cols(series, cols):
     return new_series
 
 
+# функция, которая делает словари, для того, чтобы в процессе получения рекомендаций
+# заглянуть в них и вывести только те, что действительно нужны нам по индексу или названию
+def make_dict_of_names(dataset, names):
+    ids = dataset.index
+    id_to_names = dict(zip(ids, names))
+    names_to_id = dict(zip(names, ids))
+    return id_to_names, names_to_id
+
+
+# функция, которая удаляет заданные вами знаки из строки
 def removed_punctuation(string, signs):
     for sign in signs:
         string = string.replace(sign, '')
     return string
 
 
+# функция, которая удаляет html-теги. Построена на том, что такие теги начинаются с < и заканчиваются >
 def removed_html_tags(string):
     html_tag = ''
     new_str = string
@@ -143,6 +156,7 @@ text_to_nums = Pipeline([('TextToCounter', TextToVectorCounter()),
                          ('CounterToFeature', VectorCounterToFeature())], verbose=True)
 
 
+# функция, которая добавляет выбранные вами признаки в один столбец dataframe
 def get_text_features(dataset, features):
     text_features = []
     for i in range(dataset.shape[0]):
