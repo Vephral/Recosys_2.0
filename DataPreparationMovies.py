@@ -30,10 +30,7 @@ print('End of transformation...')
 
 print('Make dict of names and IDs, IDs and names...')
 # все те же словари, которые дадут нам возможность получить название по id и наоборот
-ids = movies_dataset.index
-names = movies_dataset.title
-movie_id_name = dict(zip(ids, names))
-movie_name_id = dict(zip(names, ids))
+movie_id_name, movie_name_id = dp.make_dict_of_names(movies_dataset, movies_dataset.name)
 print('End of making dicts...')
 
 del movies_dataset['title']

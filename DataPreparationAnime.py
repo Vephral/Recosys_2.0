@@ -88,14 +88,8 @@ del anime_dataset['Aired']
 
 print('Make dict of names and IDs, IDs and names...')
 # разделение для того, чтобы, ну кто знает этих людей, вдруг кому-то придет в голову кинуть название на английском языке
-ids = anime_dataset.MAL_ID
-jap_names = anime_dataset.Name
-en_names = anime_dataset['English name']
-
-an_id_name_dict_jap = dict(zip(ids, jap_names))
-an_id_name_dict_en = dict(zip(ids, en_names))
-an_name_id_dict_jap = dict(zip(jap_names, ids))
-an_name_id_dict_en = dict(zip(en_names, ids))
+an_id_name_dict_jap, an_name_id_dict_jap = dp.make_dict_of_names(anime_dataset, anime_dataset.Name)
+an_id_name_dict_en, an_name_id_dict_en =  dp.make_dict_of_names(anime_dataset, anime_dataset['English name'])
 print('End of making dicts...')
 
 # их удаляем, так как больше не понадобятся

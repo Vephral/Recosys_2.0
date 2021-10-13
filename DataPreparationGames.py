@@ -1,4 +1,5 @@
 import pandas as pd
+import DataPreparation as dp
 from sklearn.impute import KNNImputer, SimpleImputer
 from sklearn.preprocessing import OrdinalEncoder, MinMaxScaler
 
@@ -64,10 +65,7 @@ print('Make dict of names and IDs, IDs and names...')
 # если не обнулить индекс, то потом вылезут ошибки, связанные с индексом
 games_dataset = games_dataset.reset_index(drop=True)
 # все те же словари, которые дадут нам возможность получить название по id и наоборот
-ids = games_dataset.index
-names = games_dataset.name
-game_id_name = dict(zip(ids, names))
-game_name_id_ = dict(zip(names, ids))
+game_id_name, game_name_id = dp.make_dict_of_names(games_dataset, games_dataset.name)
 print('End of making dicts...')
 
 del games_dataset['id']
