@@ -1,8 +1,6 @@
 import pandas as pd
-from time import time
-import DataPreparation as dp
-from sklearn.preprocessing import OrdinalEncoder
 from sklearn.impute import KNNImputer, SimpleImputer
+from sklearn.preprocessing import OrdinalEncoder, MinMaxScaler
 
 games_dataset = pd.read_csv('./datasets/games_dataset/new_games_dataset.csv', low_memory=False)
 # так как с самого начала, они распределены в хаотичном порядке, хочется сортировки...
@@ -18,10 +16,10 @@ games_dataset = games_dataset.loc[(games_dataset.similar_games.isnull() == False
 # теперь, выберем только те объекты, которые будут нам полезны,
 # так как в любом случае, набор слишком большой и не помещается в память.
 games_dataset = games_dataset.loc[((games_dataset.category == '0')
-                 |(games_dataset.category == '8')
-                 |(games_dataset.category == '9')
-                 |(games_dataset.category == '11')) & (games_dataset.release_dates.isnull() == False)
-                & (games_dataset.keywords.isnull() == False)]
+                                   | (games_dataset.category == '8')
+                                   | (games_dataset.category == '9')
+                                   | (games_dataset.category == '11')) & (games_dataset.release_dates.isnull() == False)
+                                  & (games_dataset.keywords.isnull() == False)]
 
 print('Start impute missing values...')
 # их можно удалить, так как по тем или иным причинам, они посчитались мной бесполезными
@@ -50,7 +48,7 @@ for float_col in float_cols:
 # так как не хочется, чтобы во всех столбцах были одинаковые значения, применяем такую технику
 imputer = SimpleImputer(strategy='most_frequent')
 for i in range(50):
-    games_dataset[(i*1000):((i+1)*1000)] = imputer.fit_transform(games_dataset[(i*1000):((i+1)*1000)])
+    games_dataset[(i * 1000):((i + 1) * 1000)] = imputer.fit_transform(games_dataset[(i * 1000):((i + 1) * 1000)])
 print('End of imputation...')
 
 print('Start encoding categorical values...')
@@ -58,7 +56,7 @@ print('Start encoding categorical values...')
 # лишь бы оно было разное, выбираем самый простой кодировщик
 encoder = OrdinalEncoder()
 # три последних кодируем, так как в них сравнительно мало уникальных значений
-cat_cols = ['collection', 'game_modes', 'platforms', 'player_perspectives', 'genres']
+cat_cols = ['collection', 'game_modes', 'platforms', 'player_perspectives', 'genres', 'keywords', 'involved_companies']
 games_dataset[cat_cols] = encoder.fit_transform(games_dataset[cat_cols])
 print('End of encoding...')
 
@@ -77,16 +75,10 @@ del games_dataset['name']
 del games_dataset['slug']
 del games_dataset['similar_games']
 
-print('Start transform text values into a Bag-Of-Words...')
-# применяем bag-of-words на текстовые столбцы, если что, то функция сама их найдет
-games_matrices = dp.get_text_features(games_dataset)
-print('End of transformation...')
-
 print('Implementing Normalization...')
-# применяем масштабирование
-scaled_nums, cols = dp.implement_scalar(games_dataset)
-games_dataset[cols] = scaled_nums
+scalar = MinMaxScaler()
+games_dataset = scalar.fit_transform(games_dataset)
 print('End of Normalization...')
 
 # у данного набора тоже большое время ожидания исполнения кода - 3 минуты
-games_dataset.to_csv('C:/Users/ASDW/Python/Projects/Recosys 2.0/datasets/games_dataset/games_matrix.csv')
+games_dataset.to_csv('C:/Users/ASDW/PycharmProjects/Recosys 2.0/datasets/games_dataset/games_matrix.csv')

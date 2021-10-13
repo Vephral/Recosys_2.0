@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import DataPreparation as dp
 from sklearn.impute import KNNImputer
-from sklearn.preprocessing import OrdinalEncoder
+from sklearn.preprocessing import OrdinalEncoder, MinMaxScaler
 
 anime_dataset = pd.read_csv('./datasets/anime_dataset/anime.csv')
 print('Dataset Loaded...')
@@ -110,14 +110,14 @@ anime_dataset['text_features'] = dp.get_text_features(anime_dataset, text_cols)
 anime_matrix = dp.text_to_nums.fit_transform(anime_dataset['text_features'])
 print('End of transformation...')
 
-del anime_dataset['text_features']
 del anime_dataset['Genres']
 del anime_dataset['English name']
+del anime_dataset['text_features']
 
 print('Implementing Normalization...')
 # применяем масштабирование на всех столбцах
-scaled_nums, cols = dp.implement_scalar(anime_dataset)
-anime_dataset[cols] = scaled_nums
+scalar = MinMaxScaler()
+anime_dataset = scalar.fit_transform(anime_dataset)
 print('End of Normalization...')
 
 # это нужно сделать, так как большое время ожидания исполнения кода - 9 минут на то, чтобы преобразовать тексты

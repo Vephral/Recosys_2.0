@@ -6,7 +6,6 @@ from urlextract import URLExtract
 from scipy.sparse import csr_matrix
 from sklearn.pipeline import Pipeline
 from nltk.stem.porter import PorterStemmer
-from sklearn.preprocessing import MinMaxScaler
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
@@ -150,12 +149,3 @@ def get_text_features(dataset, features):
         # добавляем пробел, чтобы vectorizer не засчитал "слипшиеся" слова как одно слово
         text_features.append(''.join([dataset[feature].loc[i] + ' ' for feature in features]))
     return text_features
-
-
-scalar = MinMaxScaler()
-
-
-def implement_scalar(dataset):
-    num_cols = [i for i in dataset.columns if dataset[i].dtype != 'object' and i not in ['MAL_ID', 'id']]
-    scaled_cols = scalar.fit_transform(dataset[num_cols])
-    return scaled_cols, num_cols
