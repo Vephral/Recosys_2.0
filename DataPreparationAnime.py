@@ -80,29 +80,47 @@ replaced_date = pd.Series(replaced_date).str.split()
 cols = ['release_month', 'release_day', 'release_year', 'end_month', 'end_day', 'end_year']
 date_cols = dp.date_to_cols(replaced_date, cols=cols)
 anime_dataset[cols] = date_cols
-del anime_dataset['Aired']
+print('End of transformation...')
+
 # как мне кажется, от японского названия нет толку, поэтому просто удалим его.
 del anime_dataset['Japanese name']
-print('End of transformation...')
+del anime_dataset['Aired']
 
 print('Make dict of names and IDs, IDs and names...')
 # разделение для того, чтобы, ну кто знает этих людей, вдруг кому-то придет в голову кинуть название на английском языке
 ids = anime_dataset.MAL_ID
 jap_names = anime_dataset.Name
 en_names = anime_dataset['English name']
+
 an_id_name_dict_jap = dict(zip(ids, jap_names))
 an_id_name_dict_en = dict(zip(ids, en_names))
 an_name_id_dict_jap = dict(zip(jap_names, ids))
 an_name_id_dict_en = dict(zip(en_names, ids))
 print('End of making dicts...')
 
+# их удаляем, так как больше не понадобятся
+del anime_dataset['MAL_ID']
+del anime_dataset['Name']
+
 print('Start transform text values into a Bag-Of-Words...')
+text_cols = ['Genres', 'English name']
 # кодируем текстовые столбцы в матрицу признаков
-anime_matrices = dp.get_text_features(anime_dataset)
+anime_dataset['text_features'] = dp.get_text_features(anime_dataset, text_cols)
+
+anime_matrix = dp.text_to_nums.fit_transform(anime_dataset['text_features'])
 print('End of transformation...')
+
+del anime_dataset['text_features']
+del anime_dataset['Genres']
+del anime_dataset['English name']
 
 print('Implementing Normalization...')
 # применяем масштабирование на всех столбцах
 scaled_nums, cols = dp.implement_scalar(anime_dataset)
 anime_dataset[cols] = scaled_nums
 print('End of Normalization...')
+
+# это нужно сделать, так как большое время ожидания исполнения кода - 9 минут на то, чтобы преобразовать тексты
+anime_text_matrix = pd.DataFrame(anime_matrix.toarray())
+anime_text_matrix.to_csv('C:/Users/ASDW/PycharmProjects/Recosys 2.0/datasets/anime_dataset/anime_txt_matrix.csv')
+anime_dataset.to_csv('C:/Users/ASDW/PycharmProjects/Recosys 2.0/datasets/anime_dataset/anime_num_matrix.csv')
