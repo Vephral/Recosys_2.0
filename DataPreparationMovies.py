@@ -40,7 +40,8 @@ print('Start transform text values into a Bag-Of-Words...')
 text_cols = ['genres', 'keywords', 'overview', 'production_companies', 'tagline', 'original_title']
 movies_matrices = dp.get_text_features(movies_dataset, text_cols)
 movies_dataset['text_features'] = dp.get_text_features(movies_dataset, text_cols)
-movies_matrix = dp.text_to_nums.fit_transform(movies_dataset['text_features'])
+# movies_matrix = dp.text_to_nums.fit_transform(movies_dataset['text_features'])
+movies_matrix = pd.read_csv('./datasets/movies_dataset/movies_text_matrix.csv')
 text_cols.append('text_features')
 print('End of transformation...')
 
@@ -53,6 +54,7 @@ scalar = MinMaxScaler()
 movies_dataset = scalar.fit_transform(movies_dataset)
 print('End of Normalization...')
 
-movies_text_matrix = pd.DataFrame(movies_matrix.toarray())
-movies_dataset.to_csv('C:/Users/ASDW/PycharmProjects/Recosys 2.0/datasets/movies_dataset/movies_num_matrix')
-movies_text_matrix.to_csv('C:/Users/ASDW/PycharmProjects/Recosys 2.0/datasets/movies_dataset/movies_text_matrix.csv')
+# сейчас, когда уже все преобразования проведены, этот код не нужен
+# movies_text_matrix = pd.DataFrame(movies_matrix.toarray())
+# movies_dataset.to_csv('C:/Users/ASDW/PycharmProjects/Recosys 2.0/datasets/movies_dataset/movies_num_matrix')
+# movies_text_matrix.to_csv('C:/Users/ASDW/PycharmProjects/Recosys 2.0/datasets/movies_dataset/movies_text_matrix.csv')

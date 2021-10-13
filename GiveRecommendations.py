@@ -1,7 +1,7 @@
 import pandas as pd
 from numpy import where, all
 from sklearn.metrics.pairwise import cosine_similarity
-from DataPreparationGames import game_name_id, game_id_name
+
 
 # функция, которая вычисляет схожесть между элементами в наборе данных
 def get_cosine_sim(num_matrix, text_matrix):
@@ -27,18 +27,40 @@ def get_similar(full_cs, item, id_dict, name_dict):
         return similar
     else:
         print('Title not in our database or it`s invalid.')
+        return None
 
 
 # функция, которая возвращает рекомендации
-def give_recommendations(item: str, reco_type='normal'):
-    games_matrix = pd.read_csv('./datasets/games_dataset/games_matrix.csv')
-    game_id_name, game_name_id = g
+def give_recommendations(item: str, item_type: str = 'games'):
+    if item_type == 'games':
+        # так, это было сделано, так как иначе возникает конфликт между похожими файлами
+        import DataPreparationGames as dpg
+        games_matrix = pd.read_csv('./datasets/games_dataset/games_matrix.csv')
+        game_id_name, game_name_id = dpg.data_preparation_for_games(True)
 
-    full_cs = get_cosine_sim(games_matrix, None)
-    similar = get_similar(full_cs, item, game_id_name, game_name_id)
+        full_cs = get_cosine_sim(games_matrix, None)
+        similar = get_similar(full_cs, item, game_id_name, game_name_id)
+        return similar
+    if item_type == 'anime':
+        import DataPreparationAnime as dpa
+        anime_num_matrix = pd.read_csv('./datasets/anime_dataset/anime_num_matrix.csv')
+        anime_text_matrix = pd.read_csv('./datasets/anime_dataset/anime_text_matrix.csv')
 
-    if reco_type == 'normal':
-        [print(i, ' - ', similar[i]) for i in range(len(similar))]
-    if reco_type == 'vk':
-        # здесб будет код, который обращается к вк
-        print(similar)
+        full_cs = get_cosine_sim(anime_num_matrix, anime_text_matrix)
+        if item in dpa.an_name_id_dict_en.keys():
+            similar = get_similar(full_cs, item, dpa.an_id_name_dict_en, dpa.an_name_id_dict_en)
+            return similar
+        if item in dpa.an_name_id_dict_jap.keys():
+            similar = get_similar(full_cs, item, dpa.an_id_name_dict_jap, dpa.an_name_id_dict_jap)
+            return similar
+    if item_type == 'movies':
+        import DataPreparationMovies as dpm
+        movie_num_matrix = pd.read_csv('./datasets/movies_dataset/movies_num_matrix.csv')
+        movie_text_matrix = pd.read_csv('./datasets/movies_dataset/movies_text_matrix.csv')
+
+        full_cs = get_cosine_sim(movie_num_matrix, movie_text_matrix)
+        similar = get_similar(full_cs, item, dpm.movie_id_name, dpm.movie_name_id)
+        return similar
+    else:
+        print('This type of recommendations don`t in out database.')
+        return None

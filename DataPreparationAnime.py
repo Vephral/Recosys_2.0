@@ -98,7 +98,6 @@ print('Start transform text values into a Bag-Of-Words...')
 text_cols = ['Genres', 'English name']
 # кодируем текстовые столбцы в матрицу признаков
 anime_dataset['text_features'] = dp.get_text_features(anime_dataset, text_cols)
-
 #anime_matrix = dp.text_to_nums.fit_transform(anime_dataset['text_features'])
 anime_matrix = pd.read_csv('./datasets/anime_dataset/anime_text_matrix.csv')
 print('End of transformation...')
