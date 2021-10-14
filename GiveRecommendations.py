@@ -62,5 +62,5 @@ def give_recommendations(item: str, item_type: str = 'games'):
         similar = get_similar(full_cs, item, dpm.movie_id_name, dpm.movie_name_id)
         return similar
     else:
-        print('This type of recommendations don`t in out database.')
+        print('This type of recommendations don`t in our database.')
         return None
