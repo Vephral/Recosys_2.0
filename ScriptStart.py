@@ -1,5 +1,6 @@
 import requests
 from time import sleep
+import VkRequests as vr
 import RecosysBot as rb
 import GiveRecommendations as gr
 
@@ -31,12 +32,12 @@ def print_recommendations(print_in='log'):
         similar = gr.give_recommendations(item, type_of_recs)
         [print(i + 1, ' - ', similar[i]) for i in range(len(similar))]
     if print_in == 'vk':
-        longpoll_listen = requests.request('POST', server + '?act=a_check&key=' + key + f'&ts={ts}&wait=25')
-        events = longpoll_listen.json()
+        # мы должны захватить сразу два события, так как первое - состояние печатания, а второе - новое сообщение
+        # по-другому просто не работает. не знаю почему.
+        ts = str((int(ts)-2)+1)
+        events = vr.create_longpoll(server, key, ts)
+        print(events)
         # иногда, когда действие ключа истекает, выбрасывается ошибка
-        if 'error' in events.keys():
-            print('Reactivate Function')
-            return None
         for event in events['updates']:
             # другие события нам пока что не интересны
             if event['type'] == 'message_new':
@@ -48,13 +49,21 @@ def print_recommendations(print_in='log'):
                 sleep(25)
 
                 if user_message == 'Запуск':
-                    rb.RecosysBot(user_message, user_id).recosys_start()
-                if user_message in ['games', 'movies', 'anime']:
-                    rb.RecosysBot(user_message, user_id).take_recommendations(new_ts)
+                    rb.RecosysBot(user_message, user_id, server, key).recosys_start()
+                if user_message in ['игры', 'фильмы', 'аниме']:
+                    if user_message == 'игры':
+                        user_message = 'games'
+                        rb.RecosysBot(user_message, user_id, server, key).take_recommendations(new_ts)
+                    if user_message == 'фильмы':
+                        user_message = 'movies'
+                        rb.RecosysBot(user_message, user_id, server, key).take_recommendations(new_ts)
+                    if user_message == 'аниме':
+                        user_message = 'anime'
+                        rb.RecosysBot(user_message, user_id, server, key).take_recommendations(new_ts)
                 if user_message == 'Инструкция по применению':
-                    rb.RecosysBot(user_message, user_id).give_instructions()
-                    rb.RecosysBot(user_message, user_id).give_refinements()
+                    rb.RecosysBot(user_message, user_id, server, key).give_instructions()
+                    rb.RecosysBot(user_message, user_id, server, key).give_refinements()
 
 
 if __name__ == '__main__':
-    print_recommendations('vk')
+    print(print_recommendations('vk'))
