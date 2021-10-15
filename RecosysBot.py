@@ -55,12 +55,20 @@ class RecosysBot:
             sleep(5)
 
     def take_recommendations(self, ts):
+        # для того, чтобы точно принять два события
+        ts = str(int(ts) - 3 + 1)
         # новое ожидание ответа от пользователя для того, чтобы получить название объекта
-        new_events = vr.create_longpoll(self.server, self.key, ts)
         vr.send_message(self.user_id, randint(0, 10000), 'Введите название объекта.')
+        # судя по всему, из-за того, что пользователь не успевает написать, появляются проблемы
+        sleep(5)
+        new_events = vr.create_longpoll(self.server, self.key, ts)
+        print(new_events)
         for event in new_events['updates']:
             if event['type'] == 'message_new':
                 user_item = event['object']['message']['text']
+                # так как в цикле у нас могут попасться прошлые сообщения, мы их пропускаем
+                if user_item in ['аниме', 'игры', 'фильмы']:
+                    continue
                 similar = gr.give_recommendations(user_item, self.user_message)
                 # в том случае, если названия объекта нет в базе данных, функция вернет None
                 if similar is not None:

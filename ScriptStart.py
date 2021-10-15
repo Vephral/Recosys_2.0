@@ -45,21 +45,23 @@ def print_recommendations(print_in='log'):
                 new_ts = str(int(events['ts']) + 1)
                 user_id = event['object']['message']['from_id']
                 user_message = event['object']['message']['text']
+                # нужно, чтобы обдурить пользователей. ХАХАХАХХАХА.
+                if user_message == 'Дать рекомендацию':
+                    return None
                 # ждем 25 секунд, так как рекомендованное значение ожидания (вверху) в longpoll - 25 секунд
                 sleep(25)
 
                 if user_message == 'Запуск':
                     rb.RecosysBot(user_message, user_id, server, key).recosys_start()
-                if user_message in ['игры', 'фильмы', 'аниме']:
-                    if user_message == 'игры':
-                        user_message = 'games'
-                        rb.RecosysBot(user_message, user_id, server, key).take_recommendations(new_ts)
-                    if user_message == 'фильмы':
-                        user_message = 'movies'
-                        rb.RecosysBot(user_message, user_id, server, key).take_recommendations(new_ts)
-                    if user_message == 'аниме':
-                        user_message = 'anime'
-                        rb.RecosysBot(user_message, user_id, server, key).take_recommendations(new_ts)
+                if user_message == 'игры':
+                    user_message = 'games'
+                    rb.RecosysBot(user_message, user_id, server, key).take_recommendations(new_ts)
+                if user_message == 'фильмы':
+                    user_message = 'movies'
+                    rb.RecosysBot(user_message, user_id, server, key).take_recommendations(new_ts)
+                if user_message == 'аниме':
+                    user_message = 'anime'
+                    rb.RecosysBot(user_message, user_id, server, key).take_recommendations(new_ts)
                 if user_message == 'Инструкция по применению':
                     rb.RecosysBot(user_message, user_id, server, key).give_instructions()
                     rb.RecosysBot(user_message, user_id, server, key).give_refinements()

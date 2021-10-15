@@ -47,12 +47,8 @@ def give_recommendations(item: str, item_type: str = 'games'):
         anime_text_matrix = pd.read_csv('./datasets/anime_dataset/anime_text_matrix.csv')
 
         full_cs = get_cosine_sim(anime_num_matrix, anime_text_matrix)
-        if item in dpa.an_name_id_dict_en.keys():
-            similar = get_similar(full_cs, item, dpa.an_id_name_dict_en, dpa.an_name_id_dict_en)
-            return similar
-        if item in dpa.an_name_id_dict_jap.keys():
-            similar = get_similar(full_cs, item, dpa.an_id_name_dict_jap, dpa.an_name_id_dict_jap)
-            return similar
+        similar = get_similar(full_cs, item, dpa.an_id_name_dict_jap, dpa.an_name_id_dict_jap)
+        return similar
     if item_type == 'movies':
         import DataPreparationMovies as dpm
         movie_num_matrix = pd.read_csv('./datasets/movies_dataset/movies_num_matrix.csv')
