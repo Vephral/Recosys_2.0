@@ -53,6 +53,7 @@ def print_recommendations(print_in='log'):
                     rb.RecosysBot(user_message, user_id).take_recommendations(new_ts)
                 if user_message == 'Инструкция по применению':
                     rb.RecosysBot(user_message, user_id).give_instructions()
+                    rb.RecosysBot(user_message, user_id).give_refinements()
 
 
 if __name__ == '__main__':
