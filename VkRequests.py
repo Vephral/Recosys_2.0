@@ -1,5 +1,6 @@
 import requests
 
+
 # логично, но функция, которая отправляет сообщение пользователю
 def send_message(user_id, random_id, message):
     params = {'user_id': user_id, 'random_id': random_id, 'message': message}
@@ -19,3 +20,13 @@ def create_longpoll(server, key, ts):
         return None
     return events
 
+
+# функция, которая забирает ключ, ссылку на сервер и, судя по всему, уникальное значение для сообщения
+def give_key_server_and_ts(group_id: str, access_token: str, ver: str):
+    params = {'group_id': group_id}
+    request = requests.request('GET',
+                               'https://api.vk.com/method/groups.getLongPollServer?&access_token'
+                               '=' + access_token + '&v=' + ver, params=params)
+    # ответ всегда приходит в виде json
+    response = request.json()
+    return response['response']['key'], response['response']['server'], response['response']['ts']
