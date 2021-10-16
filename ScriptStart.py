@@ -9,8 +9,8 @@ import GiveRecommendations as gr
 def print_recommendations(print_in='log'):
     # сделано так по двум причинам: во-первых, когда ключ придется изменить, все, что нужно - запустить ту же функцию
     # во-вторых, это безопаснее, так как все ключи нужно будет убрать, а тут их видно хорошо
-    key, server, ts = vr.give_key_server_and_ts(group_id='197988828',
-                                             access_token='3b156916467056f5d6dc91341ea329ae212a49674024fa603aa93c77e435fefaf6a697a151fad4220f266',
+    key, server, ts = vr.give_key_server_and_ts(group_id='...',
+                                             access_token='...',
                                              ver='5.122')
     if print_in == 'log':
         print('Write type of data: ')
